@@ -1,0 +1,13 @@
+<h1>Photos</h1>
+<p>Express stock photo application.</p>
+
+<div id="photos">
+    {{#each photos}}
+
+<div class="photo">
+    <h2>{{this.name}}</h2>
+    <img src="{{this.path}}" />
+</div>
+
+    {{/each}}
+</div>
