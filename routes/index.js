@@ -2,8 +2,10 @@ var express = require('express');
 var router = express.Router();
 
 /* GET home page. */
-router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Express' });
+router.get('/', function (req, res, next) {
+  res.render('index', {
+    title: 'Express'
+  });
 });
 
 var photos = [];
@@ -24,5 +26,11 @@ router.get('/photos', function (req, res, next) {
     photos: photos
   });
 });
+
+router.get('/form', function (req, res) {
+  res.render('photos/upload', {
+    title: 'Photo upload'
+  });
+})
 
 module.exports = router;
