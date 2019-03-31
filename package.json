@@ -16,5 +16,11 @@
   "bugs": {
     "url": "https://github.com/HyramTang/express-practice/issues"
   },
-  "homepage": "https://github.com/HyramTang/express-practice#readme"
+  "homepage": "https://github.com/HyramTang/express-practice#readme",
+  "dependencies": {
+    "express": "^4.16.4"
+  },
+  "devDependencies": {
+    "eslint": "^5.16.0"
+  }
 }
