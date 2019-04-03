@@ -1,8 +1,19 @@
-const Genre=require('../models/genre');
+const Genre = require('../models/genre');
 
 // 显示完整的书籍类型列表
 exports.genre_list = (req, res) => {
-    res.send('未实现：书籍类型列表');
+    Genre.find().sort([
+            ['name', 'ascending']
+        ])
+        .exec(function (err, list_genres) {
+            if (err) {
+                return next(err);
+            }
+            res.render('genre_list', {
+                title: 'Genre List',
+                genre_list: list_genres
+            });
+        });
 };
 
 // 为每位书籍类型显示详细信息的页面
