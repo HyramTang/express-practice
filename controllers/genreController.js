@@ -1,4 +1,6 @@
 const Genre = require('../models/genre');
+var Book = require('../models/book');
+var async = require('async');
 
 // 显示完整的书籍类型列表
 exports.genre_list = (req, res) => {
@@ -18,7 +20,33 @@ exports.genre_list = (req, res) => {
 
 // 为每位书籍类型显示详细信息的页面
 exports.genre_detail = (req, res) => {
-    res.send('未实现：书籍类型详细信息：' + req.params.id);
+    async.parallel({
+        genre: function (callback) {
+            Genre.findById(req.params.id)
+                .exec(callback);
+        },
+        genre_books: function (callback) {
+            Book.find({
+                    'genre': req.params.id
+                })
+                .exec(callback);
+        },
+    }, function (err, results) {
+        if (err) {
+            return next(err);
+        }
+        if (results.genre == null) { // No results.
+            var err = new Error('Genre not found');
+            err.status = 404;
+            return next(err);
+        }
+        // Successful, so render
+        res.render('genre_detail', {
+            title: 'Genre Detail',
+            genre: results.genre,
+            genre_books: results.genre_books
+        });
+    });
 };
 
 // 由 GET 显示创建书籍类型的表单

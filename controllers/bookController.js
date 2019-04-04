@@ -56,7 +56,37 @@ exports.book_list = function (req, res, next) {
 
 // 为每本书籍显示详细信息的页面
 exports.book_detail = (req, res) => {
-    res.send('未实现：书籍详细信息：' + req.params.id);
+    async.parallel({
+        book: function (callback) {
+
+            Book.findById(req.params.id)
+                .populate('author')
+                .populate('genre')
+                .exec(callback);
+        },
+        book_instance: function (callback) {
+
+            BookInstance.find({
+                    'book': req.params.id
+                })
+                .exec(callback);
+        },
+    }, function (err, results) {
+        if (err) {
+            return next(err);
+        }
+        if (results.book == null) { // No results.
+            var err = new Error('Book not found');
+            err.status = 404;
+            return next(err);
+        }
+        // Successful, so render.
+        res.render('book_detail', {
+            title: 'Title',
+            book: results.book,
+            book_instances: results.book_instance
+        });
+    });
 };
 
 // 由 GET 显示创建书籍的表单

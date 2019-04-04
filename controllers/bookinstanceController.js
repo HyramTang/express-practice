@@ -20,7 +20,23 @@ exports.bookinstance_list = function (req, res, next) {
 
 // 为每位书籍实例显示详细信息的页面
 exports.bookinstance_detail = (req, res) => {
-    res.send('未实现：书籍实例详细信息：' + req.params.id);
+    BookInstance.findById(req.params.id)
+        .populate('book')
+        .exec(function (err, bookinstance) {
+            if (err) {
+                return next(err);
+            }
+            if (bookinstance == null) { // No results.
+                var err = new Error('Book copy not found');
+                err.status = 404;
+                return next(err);
+            }
+            // Successful, so render.
+            res.render('bookinstance_detail', {
+                title: 'Book:',
+                bookinstance: bookinstance
+            });
+        });
 };
 
 // 由 GET 显示创建书籍实例的表单
