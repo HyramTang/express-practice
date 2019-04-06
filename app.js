@@ -12,7 +12,7 @@ var app = express();
 
 // 设置 Mongoose 连接
 const mongoose = require('mongoose');
-const mongoDB = 'mongodb://localhost/local_library';
+const mongoDB = 'mongodb://localhost:27017/local_library';
 mongoose.connect(mongoDB);
 mongoose.Promise = global.Promise;
 const db = mongoose.connection;

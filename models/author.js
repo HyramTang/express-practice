@@ -16,7 +16,7 @@ const AuthorSchema = new Schema({
     date_of_birth: {
         type: Date
     },
-    datet_of_death: {
+    date_of_death: {
         type: Date
     }
 });
@@ -32,7 +32,15 @@ AuthorSchema
 AuthorSchema
     .virtual('lifespan')
     .get(function () {
-        return (this.date_of_death.getYear() - this.date_of_birth.getYear()).toString();
+        var year_of_birth = this.date_of_birth ? this.date_of_birth.getFullYear() : 0;
+        var year_of_death = this.date_of_death ? this.date_of_death.getFullYear() : 0;
+        if (year_of_birth == 0 && year_of_death == 0) {
+            return false;
+        } else {
+            if (year_of_birth > 0 && year_of_death == 0)
+                year_of_death = new Date().getFullYear();
+            return (year_of_death - year_of_birth).toString();
+        }
     });
 
 // 虚拟属性'url'：作者 URL
