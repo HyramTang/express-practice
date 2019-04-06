@@ -209,8 +209,30 @@ exports.book_create_post = [
 ];
 
 // 由 GET 显示删除书籍的表单
-exports.book_delete_get = (req, res) => {
-    res.send('未实现：书籍删除表单的 GET');
+exports.book_delete_get = (req, res, next) => {
+
+    async.parallel({
+        book: function (callback) {
+            Book.findById(req.params.id).exec(callback);
+        },
+        book_instances: function (callback) {
+            BookInstance.find({
+                'book': req.params.id
+            }).exec(callback);
+        }
+    }, function (err, results) {
+        if (err) {
+            return next(err);
+        }
+        if (results.book == null) {
+            res.redirect('/catalog/books');
+        }
+        res.render('book_delete', {
+            title: '删除书籍',
+            book: results.book,
+            book_instances: results.book_instances
+        });
+    });
 };
 
 // 由 POST 处理书籍删除操作
