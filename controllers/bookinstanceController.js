@@ -7,6 +7,7 @@ const {
     sanitizeBody
 } = require('express-validator/filter');
 var Book = require('../models/book');
+var async = require('async');
 
 // 显示完整的书籍实例列表
 exports.bookinstance_list = function (req, res, next) {
@@ -128,12 +129,34 @@ exports.bookinstance_create_post = [
 
 // 由 GET 显示删除书籍实例的表单
 exports.bookinstance_delete_get = (req, res) => {
-    res.send('未实现：书籍实例删除表单的 GET');
+    async.parallel({
+        bookinstance: function (callback) {
+            BookInstance.findById(req.params.id)
+                .populate('book').exec(callback);
+        }
+    }, function (err, results) {
+        if (err) {
+            return next(err);
+        }
+        if (results.bookinstance == null) {
+            res.redirect('/catalog/bookinstances');
+        }
+        res.render('bookinstance_delete', {
+            title: 'Delete Bookinstance',
+            bookinstance: results.bookinstance
+        });
+    });
 };
 
 // 由 POST 处理书籍实例删除操作
 exports.bookinstance_delete_post = (req, res) => {
-    res.send('未实现：删除书籍实例的 POST');
+    BookInstance.findByIdAndRemove(req.body.bookinstanceid, function deleteBookinstance(err) {
+        if (err) {
+            return next(err);
+        }
+        // Success - go to author list
+        res.redirect('/catalog/bookinstances')
+    })
 };
 
 // 由 GET 显示更新书籍实例的表单
