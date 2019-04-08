@@ -237,7 +237,37 @@ exports.book_delete_get = (req, res, next) => {
 
 // 由 POST 处理书籍删除操作
 exports.book_delete_post = (req, res) => {
-    res.send('未实现：删除书籍的 POST');
+    async.parallel({
+        book: function (callback) {
+            Book.findById(req.body.bookid).exec(callback)
+        },
+        book_instances: function (callback) {
+            BookInstance.find({
+                'book': req.body.bookid
+            }).exec(callback)
+        },
+    }, function (err, results) {
+        if (err) {
+            return next(err);
+        }
+        // Success
+        if (results.book_instances.length > 0) {
+            res.render('book_delete', {
+                title: 'Delete Book',
+                book: results.book,
+                book_instances: results.book_instances
+            });
+            return;
+        } else {
+            Book.findByIdAndRemove(req.body.bookid, function deleteBook(err) {
+                if (err) {
+                    return next(err);
+                }
+                // Success - go to author list
+                res.redirect('/catalog/books')
+            })
+        }
+    });
 };
 
 // 由 GET 显示更新书籍的表单
