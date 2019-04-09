@@ -37,7 +37,7 @@ BookInstanceSchema
 BookInstanceSchema
     .virtual('due_back_formatted')
     .get(function () {
-        return moment(this.due_back).format('YYYY/MM/DD');
+        return moment(this.due_back).format('YYYY-MM-DD');
     });
 
 // 导出 BookInstancec 模型
