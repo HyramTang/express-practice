@@ -6,6 +6,7 @@
   * jQuery
   * bootstrap
 * Node
+  * nodemon
   * async
 * Express
   * express-generator
